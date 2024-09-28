@@ -1,0 +1,4 @@
+# Specify filepatterns you want git to ignore.
+__py_cache__/*
+*.pyc
+.DS_Store

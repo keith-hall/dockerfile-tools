@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "dockerfile-tools"
+version = "0.1.0"
+description = ""
+authors = ["Keith Hall"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+ruff = "^0.6.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration: marks tests as relying on code from multiple packages (deselect with '-m \"not integration\"')",
+]
