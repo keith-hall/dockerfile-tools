@@ -1,8 +1,6 @@
 from dockerfile_tools.get_pullable_images import get_pullable_images
-from instruction_parser.instructions import *
 from dockerfile_parser import parse_instructions
 import pytest
-from textwrap import dedent
 
 
 @pytest.mark.integration

@@ -1,5 +1,5 @@
 from instruction_parser import parser
-from instruction_parser.instructions import *
+from instruction_parser.instructions import FromInstruction, ArgInstruction
 from dockerfile_parser import DockerfileInstruction
 
 

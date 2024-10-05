@@ -1,7 +1,6 @@
-from dockerfile_parser import read_dockerfile, DockerfileInstruction
+from dockerfile_parser import DockerfileInstruction
 from instruction_parser import parser
 from instruction_parser.instructions import FromInstruction, ArgInstruction
-from pathlib import Path
 from typing import Iterable, Optional
 
 
@@ -21,7 +20,7 @@ def parse_stages(raw_instructions: Iterable[DockerfileInstruction], build_args: 
         instruction = parser.parse_raw_instruction(raw_instruction)
         match instruction:
             case FromInstruction() as from_instruction:
-                stages.append(instruction)
+                stages.append(from_instruction)
             case ArgInstruction() as arg_instruction:
                 if arg_instruction.arg_value is not None or arg_instruction.arg_name not in arg_map:
                     arg_map[arg_instruction.arg_name] = arg_instruction.arg_value or ''
