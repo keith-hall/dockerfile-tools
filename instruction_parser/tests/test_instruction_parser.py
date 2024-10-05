@@ -7,7 +7,7 @@ def test_from():
     raw_instruction = DockerfileInstruction(
         line_begin=1,
         line_end=1,
-        raw_content='FROM composer:2.5.5 AS my_base',
+        raw_content='FROM composer:2.5.5\\\n AS my_base # php',
         instruction_type='FROM',
         argument_begin_index=5,
     )

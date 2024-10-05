@@ -34,7 +34,7 @@ from_regex = re.compile(
 
 
 def parse_arg_instruction(instruction: DockerfileInstruction) -> None:
-    arg = instruction.instruction_content().split('=', 1)
+    arg = instruction.instruction_content(strip_line_continuations=True, strip_comments=True).split('=', 1)
     return ArgInstruction(
         **asdict(instruction),
         arg_name=arg[0],
@@ -49,7 +49,7 @@ def remove_surrounding_quotes(value: str) -> str:
 
 
 def parse_from_instruction(instruction: DockerfileInstruction) -> None:
-    match = from_regex.match(instruction.instruction_content())
+    match = from_regex.match(instruction.instruction_content(strip_line_continuations=True, strip_comments=True))
 
     if not match:
         raise ValueError('unable to parse from instruction', instruction)
