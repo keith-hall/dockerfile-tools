@@ -34,6 +34,11 @@ Example output:
 > composer:2.5.5
 > php:8.2.20-apache-bullseye
 
+or to pull immediately add this to the end of the invocation above:
+```sh
+| xargs -n 1 -- docker pull
+```
+
 Further improvements planned:
 - accept build arguments on the command line to resolve the images
 
@@ -57,6 +62,9 @@ sudo apt-get install python3.12-full
 python3.12 -m venv ./.venv
 source .venv/bin/activate
 pip install poetry
+```
+followed by the
+```sh
 poetry install --no-root
 ```
 
