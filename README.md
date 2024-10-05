@@ -37,12 +37,26 @@ Example output:
 Further improvements planned:
 - accept build arguments on the command line to resolve the images
 
+https://docs.docker.com/reference/dockerfile/#predefined-args
 
 ## Developing
 
 With a recent version of Python 3 installed and on the PATH, and Poetry package manager available, you can execute the following to get the dependencies installed:
 
 ```sh
+poetry install --no-root
+```
+
+### Python setup
+
+To get Python 3 setup on Linux (without getting the dreaded libssl v1.0 problems), for example you could do something like this:
+```sh
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get install python3.12-full
+
+python3.12 -m venv ./.venv
+source .venv/bin/activate
+pip install poetry
 poetry install --no-root
 ```
 

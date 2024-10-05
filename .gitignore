@@ -2,3 +2,4 @@
 __py_cache__/*
 *.pyc
 .DS_Store
+.venv
