@@ -44,6 +44,19 @@ Further improvements planned:
 
 https://docs.docker.com/reference/dockerfile/#predefined-args
 
+### inject_proxy_ca
+If you find yourself wanting to use Docker behind a proxy server, for example to cache packages in the case of slow/limited internet connectivity, then you will likely need the Dockerfile to be modified to accept the CA certificate, and perhaps to direct certain commands through the proxy. This tool will automate it for you.
+This is currently done with a simple regex search on the executable name - TODO: perhaps it would be possible to use a proper Bash parser for better behavior?
+TODO: Ideally it would also be more configurable about which calls to add the proxy env var to
+TODO: allow in place edits from the CLI (but warn if not part of a git repo or if the Dockerfile is untracked or already modified etc.)
+TODO: perhaps use a rules file instead of hardcoded
+TODO: support undoing changes? Or relying on git is good enough?
+
+Example usage:
+```sh
+http_proxy='http://host.docker.internal:3128' poetry run python3 -- -m dockerfile_tools inject_proxy_ca ~/some_path_to_a/Dockerfile ~/.config/proxy-kutti/rootCA.pem > new_dockerfile
+```
+
 ## Developing
 
 With a recent version of Python 3 installed and on the PATH, and Poetry package manager available, you can execute the following to get the dependencies installed:

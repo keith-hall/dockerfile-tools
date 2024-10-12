@@ -55,7 +55,6 @@ def test_heredoc_and_indented_run() -> None:
         instruction_type=None,
         argument_begin_index=0,
     )
-    print(result[4])
     assert result[4] == DockerfileInstruction(
         line_begin=11,
         line_end=12,
@@ -63,3 +62,91 @@ def test_heredoc_and_indented_run() -> None:
         instruction_type='RUN',
         argument_begin_index=8,
     )
+
+
+def test_can_parse_multiple_switches() -> None:
+    result = get_instructions(
+        '''\
+        FROM --platform=$BUILDPLATFORM ubuntu
+        RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+        RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \\
+          --mount=type=cache,target=/var/lib/apt,sharing=locked \\
+          apt update && apt-get --no-install-recommends install -y gcc
+        '''
+    )
+
+    assert len(result) == 3
+    assert result[0] == DockerfileInstruction(
+        line_begin=1,
+        line_end=1,
+        raw_content='FROM --platform=$BUILDPLATFORM ubuntu',
+        instruction_type='FROM',
+        argument_begin_index=5,
+    )
+    switches = list(result[0].parse_switches())
+    assert result[0].argument_begin_index == 30
+    assert len(switches) == 1
+    assert switches[0].switch == 'platform'
+    assert switches[0].value == '$BUILDPLATFORM'
+
+    assert result[1] == DockerfileInstruction(
+        line_begin=2,
+        line_end=2,
+        raw_content='''RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache''',
+        instruction_type='RUN',
+        argument_begin_index=4,
+    )
+    switches = list(result[1].parse_switches())
+    assert result[1].argument_begin_index == 4
+    assert len(switches) == 0
+    
+    assert result[2] == DockerfileInstruction(
+        line_begin=3,
+        line_end=5,
+        raw_content='RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \\\n' +
+          '  --mount=type=cache,target=/var/lib/apt,sharing=locked \\\n' +
+          '  apt update && apt-get --no-install-recommends install -y gcc',
+        instruction_type='RUN',
+        argument_begin_index=4,
+    )
+    switches = list(result[2].parse_switches())
+    assert result[2].argument_begin_index == 120
+    assert len(switches) == 2
+    assert switches[0].switch == 'mount'
+    assert switches[0].value == 'type=cache,target=/var/cache/apt,sharing=locked'
+    assert switches[1].switch == 'mount'
+    assert switches[1].value == 'type=cache,target=/var/lib/apt,sharing=locked'
+    assert result[2].instruction_content(strip_line_continuations=False, strip_comments=False).strip() == 'apt update && apt-get --no-install-recommends install -y gcc'
+
+def test_can_parse_switch_with_no_value() -> None:
+    result = get_instructions(
+        '''\
+        FROM scratch
+        COPY --link /foo /bar
+        '''
+    )
+
+    assert len(result) == 2
+    assert result[0] == DockerfileInstruction(
+        line_begin=1,
+        line_end=1,
+        raw_content='FROM scratch',
+        instruction_type='FROM',
+        argument_begin_index=5,
+    )
+    switches = list(result[0].parse_switches())
+    assert result[0].argument_begin_index == 5
+    assert len(switches) == 0
+    
+    assert result[1] == DockerfileInstruction(
+        line_begin=2,
+        line_end=2,
+        raw_content='''COPY --link /foo /bar''',
+        instruction_type='COPY',
+        argument_begin_index=5,
+    )
+    switches = list(result[1].parse_switches())
+    assert result[1].argument_begin_index == 11
+    assert len(switches) == 1
+    assert switches[0].switch == 'link'
+    assert switches[0].value is None

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from dockerfile_parser import DockerfileInstruction
+from dockerfile_parser import DockerfileInstruction, InstructionSwitch
 from typing import Optional
 
 
@@ -9,6 +9,7 @@ class FromInstruction(DockerfileInstruction):
     image_version: Optional[str]
     image_hash: Optional[str]
     stage_name: Optional[str]
+    switches: list[InstructionSwitch]
 
     def image_ref(self) -> str:
         image_ref = self.image_name
@@ -23,3 +24,9 @@ class FromInstruction(DockerfileInstruction):
 class ArgInstruction(DockerfileInstruction):
     arg_name: str
     arg_value: Optional[str]
+
+
+@dataclass
+class RunInstruction(DockerfileInstruction):
+    switches: list[InstructionSwitch]
+    shell_command: str

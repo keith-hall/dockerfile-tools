@@ -24,3 +24,16 @@ def test_can_resolve_args():
         'composer:2.5.5',
         'php:8.2.20-apache-bullseye',
     ]
+
+
+@pytest.mark.integration
+def test_can_ignore_from_scratch():
+    instructions = parse_instructions(
+        '''\
+        FROM scratch
+        '''
+    )
+
+    result = list(get_pullable_images(instructions))
+
+    assert not result
