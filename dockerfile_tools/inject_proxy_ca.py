@@ -10,7 +10,7 @@ http_proxy_env_regex = re.compile(r'''\bhttps?_proxy=\S+''')
 injected_comment_regex = re.compile(r'''^# BEGIN INJECTED (?P<injected_item>.*)? INSTRUCTIONS$''')
 php_regex = re.compile(r'''\b(?:pecl|composer|php)\b''')
 pip_regex = re.compile(r'''\bpip\s+install\b''')
-command_invocations_requiring_env_var_regex = re.compile(r'''\b(?:composer\s+install|apt-get|apk(?P<https>))\b''')
+command_invocations_requiring_env_var_regex = re.compile(r'''\b(?:composer\s+install|apt-get|curl(?P<https>)|apk(?P<https>))\b''')
 
 
 def inject_ca_cert_and_proxy_env(raw_instructions: Iterable[DockerfileInstruction], ca_cert_pem: Path, proxy_url: str) -> Iterable[str]:
