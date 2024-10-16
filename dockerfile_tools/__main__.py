@@ -5,6 +5,7 @@ from pathlib import Path
 import sys
 from os.path import expanduser
 import os
+from pprint import pprint
 
 
 if sys.argv[1] == 'get_pullable_images':
@@ -16,6 +17,8 @@ elif sys.argv[1] == 'inject_proxy_ca':
         os.getenv('http_proxy')
     )
     print('\n'.join(output))
+elif sys.argv[1] == 'parse':
+    pprint(list(read_dockerfile(Path(sys.argv[2]))))
 else:
     print('unknown command')
     exit(1)

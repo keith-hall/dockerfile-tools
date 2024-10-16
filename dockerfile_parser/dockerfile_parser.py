@@ -30,7 +30,7 @@ def parse_instructions(dockerfile_contents: str) -> Iterable[DockerfileInstructi
         else:
             current_instruction += '\n' + line
 
-        line_continuation = line.endswith('\\')
+        line_continuation = line.endswith('\\') or (line_continuation and line.lstrip().startswith('#'))
         if not line_continuation:
             if not inside_heredoc:
                 heredoc_match = heredoc_begin_regex.search(line) # TODO: do we need to ignore heredocs in comments etc? nested heredocs?

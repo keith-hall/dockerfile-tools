@@ -118,6 +118,7 @@ def test_can_parse_multiple_switches() -> None:
     assert switches[1].value == 'type=cache,target=/var/lib/apt,sharing=locked'
     assert result[2].instruction_content(strip_line_continuations=False, strip_comments=False).strip() == 'apt update && apt-get --no-install-recommends install -y gcc'
 
+
 def test_can_parse_switch_with_no_value() -> None:
     result = get_instructions(
         '''\
@@ -150,3 +151,23 @@ def test_can_parse_switch_with_no_value() -> None:
     assert len(switches) == 1
     assert switches[0].switch == 'link'
     assert switches[0].value is None
+
+
+def test_comments_in_multiline_bash_dont_stop_parsing() -> None:
+    
+    result = get_instructions(
+        '''\
+        RUN docker-php-source extract && \\
+            apt-get -y update && \\
+            apt-get -y install zlib1g-dev libxml2-dev libzip-dev libcurl4-openssl-dev && \\
+            pecl install apcu-${APCU_VERSION} && \\
+            # start ddtrace
+            mkdir -p /usr/src/php/ext/ddtrace && \\
+            docker-php-ext-configure ddtrace --enable-ddtrace && \\
+            # end ddtrace
+            docker-php-ext-install -j$(nproc) ddtrace
+        '''
+    )
+
+    assert len(result) == 1
+
