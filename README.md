@@ -57,6 +57,9 @@ Example usage:
 http_proxy='http://host.docker.internal:3128' poetry run python3 -- -m dockerfile_tools inject_proxy_ca ~/some_path_to_a/Dockerfile ~/.config/proxy-kutti/rootCA.pem > new_dockerfile
 ```
 
+If you encounter problems with `apt` and GPG invalid signatures, for example because you used `docker compose build --build-arg HTTPS_PROXY=http://host.docker.internal:3128` without having run this CA cert injection first, it should be safe to do:
+`docker builder prune --all` and try again.
+
 ## Developing
 
 With a recent version of Python 3 installed and on the PATH, and Poetry package manager available, you can execute the following to get the dependencies installed:
